@@ -27,10 +27,11 @@ jobs:
         run: sudo apt-get install musl-tools -y
       - name: cargo build
         run: cargo build --release --target=x86_64-unknown-linux-musl
- 
+      - name: display target folder
+        run: sudo apt-get install tree && tree target
       - name: upload
         uses: actions/upload-artifact@v3
         with:
           name: hehInstall
           path: |
-            target
+            target/x86_64-unknown-linux-musl/release/heh
