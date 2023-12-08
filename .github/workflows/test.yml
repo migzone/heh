@@ -1,39 +1,7 @@
-permissions:
-  contents: read
+name: heh-build
+on: workflow_dispatch
 
-on:
-  workflow_dispatch:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-name: test
 jobs:
-  required:
-    runs-on: ubuntu-latest
-    name: ubuntu / ${{ matrix.toolchain }}
-    strategy:
-      matrix:
-        toolchain: [stable]
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: true
-      - name: Install ${{ matrix.toolchain }}
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: ${{ matrix.toolchain }}
-      - name: cargo generate-lockfile
-        if: hashFiles('Cargo.lock') == ''
-        run: cargo generate-lockfile
-      # https://twitter.com/jonhoo/status/1571290371124260865
-      - name: cargo test --locked
-        run: cargo test --locked --all-features --all-targets
-      # https://github.com/rust-lang/cargo/issues/6669
-      # This crate doesn't have doc tests
-      # - name: cargo test --doc
-      #   run: cargo test --locked --all-features --doc
   minimal:
     runs-on: ubuntu-latest
     name: ubuntu / stable / minimal-versions
@@ -51,8 +19,8 @@ jobs:
         run: cargo +nightly update -Zdirect-minimal-versions
       - name: cargo build
         run: cargo build --release
-        
-      - name: install
+      
+      - name: upload
         uses: actions/upload-artifact@v3
         with:
           name: hehInstall
