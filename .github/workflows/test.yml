@@ -17,12 +17,20 @@ jobs:
         run: rustup default stable
       - name: cargo update -Zdirect-minimal-versions
         run: cargo +nightly update -Zdirect-minimal-versions
+      - name: rustup x86_64-unknown-linux-musl
+        run: rustup target add x86_64-unknown-linux-musl
+      - name: rustup toolchain add nightly-x86_64-unknown-linux-gnu
+        run: rustup toolchain add nightly-x86_64-unknown-linux-gnu
+      - name: rustup target add x86_64-unknown-linux-musl --toolchain=nightly
+        run: rustup target add x86_64-unknown-linux-musl --toolchain=nightly
+      - name: apt install musl-tools -y
+        run: apt install musl-tools -y
       - name: cargo build
-        run: cargo build --release
-      
+        run: cargo build --release --target=x86_64-unknown-linux-musl
+ 
       - name: upload
         uses: actions/upload-artifact@v3
         with:
           name: hehInstall
           path: |
-            target/release/heh
+            target
